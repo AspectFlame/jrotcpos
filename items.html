@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/theme.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class = "container">
+        <div class="p-3 mb-2 bg-light text-dark">
+            <h2><center>Recipient Info</center></h2>
+            <p><center><b>Please enter all the information required for each recipient you would like to send carnations to. Once all the information required is filled out, you may either click continue to proceed or add another recipient.</b></center></p>
+            
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#recipientModal" data-mode="add">Add new recipient</button>
+            <div id="recipientCards">
+
+            </div>
+            <div class="modal fade" id="recipientModal" tabindex="-1" role="dialog" aria-labelledby="recipientModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="recipientModalLabel">Recipient Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Recipient:</label>
+                        <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount_of_carnations" class="col-form-label">Amount of Carnations:</label>
+                        <div class="row">
+                            <div class="col-2">
+                                <button type="button" class="btn btn-primary btn-sm form-control" id="amount_of_carnations">+</button>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-primary btn-sm form-control" id="amount_of_carnations">-</button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="saveRecipient" class="btn btn-primary" data-currentmode="">Save Info</button>
+                </div>
+                </div>
+            </div>
+            </div>
+            
+            <script>
+                var recipientCards = new Array();
+                $('#recipientModal').on('show.bs.modal', function (event) {
+                var modal = $(this);
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var currentmode = button.data('mode') ;// Extract info from data-* attributes
+                modal.find('.modal-title').text('Add recipient');
+
+                if (currentmode === 'edit') {
+                    // we also want the id passed in the button
+                    // use the id and pull up the recipient card from the card array 
+                    // and set the values on the modal
+                    var arrayIndex = button.data('card-index');
+                    var rCard = recipientCards[arrayIndex];
+                    modal.find('#recipient-name').val(rCard.recipientName);
+                    modal.find('#message-text').val(rCard.message);
+                    modal.find('.modal-title').text('Edit recipient');
+                    
+                }
+                modal.find("#saveRecipient").attr("data-currentmode", currentmode);
+                });
+
+                $('#saveRecipient').click(function(event){
+                    //if ($(this).data('currentmode') === 'add'){
+                        var newCard = new Object();
+                        newCard.recipientName = $('#recipientModal').find('#recipient-name')[0].value;
+                        newCard.message = $('#recipientModal').find('#message-text')[0].value;
+                        recipientCards.push(newCard);
+                        refreshCardsDiv();
+                   // }
+                    /*else if ($(this).data('currentmode') === 'edit'){
+                        // take the value of the id passed in the button
+                        // and pull the corresponding card from the array
+                        var newCard = new Object();
+                        newCard.recipientName = modal.find('#recipient-name').val;
+                        newCard.message = modal.find('#message-text').val;
+                        recipientCards.push(newCard);
+                        refreshPage();
+                    }*/
+                });
+
+                function refreshCardsDiv(){
+                    // lay out the cards from the recipientCards array
+
+                    cardsHtml = '';
+                    for (aCard of recipientCards) {
+                        cardsHtml += '<div class="col-4"><div class="col">';
+                        cardsHtml += '<div class="card h-100">';
+                        cardsHtml += '<div class="card-header mb-2"><b>' + aCard.recipientName + '</b></div>';
+                        cardsHtml += '<div class="card-body">' + aCard.message + '</div>';
+                        cardsHtml += '</div></div></div>';
+                    }
+                    $('#recipientCards').html(cardsHtml);
+ 
+                }
+            </script>
+            
+
+        </div>
+    </div>  
+</body>
+
+</html>
