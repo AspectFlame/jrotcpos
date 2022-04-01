@@ -24,6 +24,7 @@
             <div id="recipientCards">
 
             </div>
+            
             <div class="modal fade" id="recipientModal" tabindex="-1" role="dialog" aria-labelledby="recipientModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -58,13 +59,16 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" id="saveRecipient" class="btn btn-primary" data-currentmode="">Save Info</button>
+                    
+                    <button type="button" id="saveRecipient" class="btn btn-primary" data-dismiss="modal" data-currentmode="" disabled>Save Info</button>
                 </div>
                 </div>
             </div>
             </div>
             
             <script>
+
+
                 var recipientCards = new Array();
                 $('#recipientModal').on('show.bs.modal', function (event) {
                 var modal = $(this);
@@ -72,29 +76,46 @@
                 var currentmode = button.data('mode') ;// Extract info from data-* attributes
                 modal.find('.modal-title').text('Add recipient');
 
+                function checkInput() {
+                    return $('#recipientModal').find('#recipient-name').val().length > 0 && $('#recipientModal').find('#message-text').val().length > 0;
+                }
+
                 if (currentmode === 'edit') {
                     // we also want the id passed in the button
                     // use the id and pull up the recipient card from the card array 
                     // and set the values on the modal
-                    var arrayIndex = button.data('card-index');
-                    var rCard = recipientCards[arrayIndex];
-                    modal.find('#recipient-name').val(rCard.recipientName);
-                    modal.find('#message-text').val(rCard.message);
+                    var arrayIndex = button.data('index');
+                    var aCard = recipientCards[arrayIndex];
+                    modal.find('#recipient-name').val(aCard.recipientName);
+                    modal.find('#message-text').val(aCard.message);
                     modal.find('.modal-title').text('Edit recipient');
                     
                 }
+
+                
+                modal.find('#recipient-name').blur(function(event){
+                    console.log(!checkInput());
+                    modal.find('saveRecipient').prop('disabled', !checkInput());
+                    
+                });
+                modal.find('#message-text').blur(function(event){
+                    console.log(!checkInput());
+                    modal.find('saveRecipient').prop('disabled', !checkInput());
+                });
+                
+                
                 modal.find("#saveRecipient").attr("data-currentmode", currentmode);
                 });
 
                 $('#saveRecipient').click(function(event){
-                    //if ($(this).data('currentmode') === 'add'){
+                    if ($(this).data('currentmode') === 'add'){
                         var newCard = new Object();
                         newCard.recipientName = $('#recipientModal').find('#recipient-name')[0].value;
                         newCard.message = $('#recipientModal').find('#message-text')[0].value;
                         recipientCards.push(newCard);
                         refreshCardsDiv();
-                   // }
-                    /*else if ($(this).data('currentmode') === 'edit'){
+                    }
+                    else if ($(this).data('currentmode') === 'edit'){
                         // take the value of the id passed in the button
                         // and pull the corresponding card from the array
                         var newCard = new Object();
@@ -102,18 +123,20 @@
                         newCard.message = modal.find('#message-text').val;
                         recipientCards.push(newCard);
                         refreshPage();
-                    }*/
+                    }
                 });
 
                 function refreshCardsDiv(){
                     // lay out the cards from the recipientCards array
 
                     cardsHtml = '';
-                    for (aCard of recipientCards) {
+                    for (var i = 0; i < recipientCards.length; i++) {
+                        var aCard = recipientCards[i];
                         cardsHtml += '<div class="col-4"><div class="col">';
                         cardsHtml += '<div class="card h-100">';
                         cardsHtml += '<div class="card-header mb-2"><b>' + aCard.recipientName + '</b></div>';
                         cardsHtml += '<div class="card-body">' + aCard.message + '</div>';
+                        cardsHtml += '<button type="button" id="editRecipient" class="btn btn-primary" data-toggle="modal" data-target="#recipientModal" data-mode="edit" data-index="'+ i + '">Edit</button>'
                         cardsHtml += '</div></div></div>';
                     }
                     $('#recipientCards').html(cardsHtml);
