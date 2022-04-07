@@ -11,9 +11,65 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
 </head>
 
+
 <body>
-    <p>Hello</p>
+    <div class="container">
+        <div class="row">
+            <div class="p-3 mb-2 bg-light text-dark col">
+                <div class="row">
+                    <h2 class="col"><center>Customer Info</center></h2>
+                </div>
+                <div class="row">
+                    <div class="col"><p><center><b>Please enter your email. Please note: HCPS school email required.</b></center></p></div>
+                </div>
+                <div class="row">
+                    <div class="form-group col text-center">
+                        <label for="customer-email" class="col-form-label">Customer Email:</label>
+                        <select id="customer-email" class="selectpicker show-tick" data-live-search="true" data-size="10"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <a class="btn btn-secondary float-left" id="backToOrders" href = "">Back to Orders</a>
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-primary float-right" id="goToSummary" href = "cart.html" disabled>Proceed to Summary</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            users = null;
+            userEmails = null;
+            $.ajax({
+                url: "http://localhost:5001/get_users",
+                context: this,
+                method: "post",
+                dataType: "json"
+            }).done(function (data, status) {
+                users = data;
+                userEmails = new Array();
+                $('#customer-email').append('<option value="null" selected>Nothing Selected</option>');
+                for (user of users){
+                    userEmails.push(user[3]);
+                    $('#customer-email').append('<option value="' + user[3] + '">' + user[3] + '</option>');
+                }
+                $('#customer-email').selectpicker('refresh');
+                // $('#customer-email').on('change', function(event){
+                //     $('#goToSummary').prop('disabled', function() {
+                //         return !$('#customer-email').find(":selected").val() != 'null';
+                //     });
+                // });
+            });
+            $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
+        });
+    </script>
 </body>
 </html>
