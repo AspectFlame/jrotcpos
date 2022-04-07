@@ -48,7 +48,7 @@
                 result += '<div class="col-4"><div class="col">';
                 result += '<div class="card h-100">';
                 result += '<div class="card-header mb-2"><b>' + item[1] + '</b></div>';
-                result += '<div class="card-body">' + item[2] == 'null' ? '<i class="text-center">Image here</i>' : ('<a href = "items.html?category =' + item[0] + '"><img src="' + item[2] + '" class="img-fluid"></a>' ) + '</div>';
+                result += '<div class="card-body">' + item[2] == 'null' ? '<i class="text-center">Image here</i>' : ('<a href = "items.html?category=' + item[0] + '"><img src="' + item[2] + '" class="img-fluid"></a>' ) + '</div>';
                 result += '</div></div></div>';
             }
             $('#cards').html(result);
