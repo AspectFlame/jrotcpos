@@ -70,7 +70,7 @@
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#recipientModal" data-mode="add">New Recipient</button>
                     </div>
                     <div class="col-5">
-                        <a class="btn btn-primary float-right" href = "customer.html">Next Page</a>
+                        <a class="btn btn-primary float-right disabled" id="nextPageButton" href = "customer.html">Next Page</a>
                     </div>
                     </div>
                 </div>
@@ -95,6 +95,7 @@
                     params = new URLSearchParams(window.location.search);
                     $(document).ready(function () {
                         localStorage.setItem('category', params.get('category'));
+                        
                         $.ajax({
                             url: "http://localhost:5001/get_items",
                             context: this,
@@ -108,6 +109,7 @@
                                 recipientCards = JSON.parse(localStorage.getItem('cart'));
                                 refreshCardsDiv();
                             }
+    
                         });
 
                         $.ajax({
@@ -149,6 +151,8 @@
                             }
                             return false;
                         }
+                            
+
                         if (currentmode === 'edit') {
                             // we also want the id passed in the button
                             // use the id and pull up the recipient card from the card array 
@@ -190,6 +194,7 @@
                         modal.find("#saveRecipient").attr("data-currentmode", currentmode);
                     });
 
+
                     $('#saveRecipient').click(function(event){
                         if ($('#saveRecipient').attr('data-currentmode') === 'add'){
                             var newCard = new Object();
@@ -204,7 +209,6 @@
                                 $('#recipientModal').find('#' + item[0] + '_quantity').val('');
                             }
                             recipientCards.push(newCard);
-                            localStorage.setItem('cart', JSON.stringify(recipientCards));
                             refreshCardsDiv();
                         }
                         else if ($('#saveRecipient').attr('data-currentmode') === 'edit'){
@@ -222,7 +226,6 @@
                                 recipientCards[index]['values'][item[0]] = $('#recipientModal').find('#' + item[0] + '_quantity').val();
                                 $('#recipientModal').find('#' + item[0] + '_quantity').val('');
                             }
-                            localStorage.setItem('cart', JSON.stringify(recipientCards));
                             refreshCardsDiv();
                         }
                     });
@@ -240,10 +243,26 @@
                                 cardsHtml += '<p class="mb-0">' + getItemNameFromId(key) + ' x' + value + '</p>';
                             }
                             cardsHtml += '</div>';
-                            cardsHtml += '<button type="button" id="editRecipient" class="btn btn-primary" data-toggle="modal" data-target="#recipientModal" data-mode="edit" data-index="'+ i + '">Edit</button>'
-                            cardsHtml += '</div></div>';
+                            cardsHtml += '<div class="card-footer">';
+                            cardsHtml += '<div class="row">';
+                            cardsHtml += '<div class="col-lg-6 col-md-6 col-sm-12">';
+                            cardsHtml += '<button type="button" id="editRecipient" class="btn btn-block btn-primary" data-toggle="modal" data-target="#recipientModal" data-mode="edit" data-index="'+ i + '">Edit</button></div>'
+                            cardsHtml += '<div class="col-lg-6 col-md-6 col-sm-12">';
+                            cardsHtml += '<button type="button" class="btn btn-block btn-danger" onclick="deleteButton(' + i + ')">Delete</button></div>'
+                            cardsHtml += '</div></div></div></div>';
                         }
+                        if (recipientCards.length > 0) {
+                            $('#nextPageButton').removeClass('disabled');
+                        } else {
+                            $('#nextPageButton').addClass('disabled');
+                        }
+                        localStorage.setItem('cart', JSON.stringify(recipientCards));
                         $('#recipientCards').html(cardsHtml);
+                    }
+
+                    function deleteButton(index) {
+                        recipientCards.splice(index, 1);
+                        refreshCardsDiv();
                     }
 
                     function getItemNameFromId(id) {
