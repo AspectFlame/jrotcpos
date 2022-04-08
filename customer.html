@@ -38,7 +38,7 @@
                         <a class="btn btn-secondary float-left" id="backToOrders" href = "">Back to Orders</a>
                     </div>
                     <div class="col-6">
-                        <a class="btn btn-primary float-right" id="goToSummary" href = "cart.html" disabled>Proceed to Summary</a>
+                        <a class="btn btn-primary float-right disabled" id="goToSummary" href = "cart.html" disabled>Proceed to Summary</a>
                     </div>
                 </div>
             </div>
@@ -62,14 +62,16 @@
                     $('#customer-email').append('<option value="' + user[3] + '">' + user[3] + '</option>');
                 }
                 $('#customer-email').selectpicker('refresh');
-                // $('#customer-email').on('change', function(event){
-                //     $('#goToSummary').prop('disabled', function() {
-                //         return !$('#customer-email').find(":selected").val() != 'null';
-                //     });
-                // });
+                
             });
             $('#customer-email').on('change', function(event){
-                localStorage.setItem('customerEmail', $('#customer-email').val());           
+                localStorage.setItem('customerEmail', $('#customer-email').val());       
+                if ('#customer-email' != "null") {
+                    $('#goToSummary').removeClass('disabled');
+                }
+                else {
+                    $('#goToSummary').addClass('disabled');
+                }
             });
             localStorage.setItem('customerEmail', $('#customer-email').val());
             $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
