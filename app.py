@@ -41,17 +41,40 @@ def get_items():
 
 @app.route('/get_users', methods=["POST", "GET"])
 def get_users():
-    # users = request.form.get('users_id')
     cursor.execute('SELECT * FROM users WHERE expiration_date IS null')
     data = cursor.fetchall()
     response = jsonify(data)
     return response
+
+def get_users_by_email(email):
+    cursor.execute('SELECT * FROM users WHERE expiration_date is null and email=%s', (email,))
+    userrec = cursor.fetchall()
+    return userrec
 
 @app.route('/get_categories', methods=["POST", "GET"])
 def get_categories():
     cursor.execute('SELECT * from product_category')
     data = cursor.fetchall()
     response = jsonify(data)
+    return response
+
+@app.route('/create_order', methods=["PUT"])
+def create_order():
+    recipientCards = request.form.get('recipient_cards')
+    recipientCardJSON = json.loads(recipientCards)
+    print(recipientCardJSON[0])
+    customerEmail = str(request.form.get('customer_email'))
+    customer = get_users_by_email(customerEmail)
+    cursor.execute('insert into orders (customer_users_fk, date_ordered) values (%s, current_timestamp)', (customer[0][0],))
+    cursor.execute('select MAX(id) AS orderid FROM orders')
+    data = cursor.fetchall()
+    orderid = data[0][0]
+    print(orderid)
+    for card in recipientCardJSON: 
+        print(card['recipientEmail'])
+        recipient = get_users_by_email(card['recipientEmail'])
+        cursor.execute('insert into order_recipients (order_id_fk, recipient_users_fk, gift_msg) values (%s, %s, %s)', (orderid, recipient[0][0], card['message'])) 
+    response = jsonify(orderid)
     return response
 
 
