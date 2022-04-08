@@ -36,7 +36,7 @@
                 <a class="btn btn-info" id="backToCustomer" href = "">Back to Customer Info</a>
             </div>
             <div class="col-5 p-3">
-                <a class="btn btn-primary float-right" href = "index.html" onclick="return addOrderToDb()">Finish Order</a>
+                <a class="btn btn-primary float-right" onclick=" addOrderToDb()">Finish Order</a>
             </div>
         </div>
     </div>
@@ -85,8 +85,18 @@
             });
         });
         function addOrderToDb() {
-            localStorage.clear();
-            return localStorage.length == 0;
+
+            $.ajax({
+                url: "http://localhost:5001/create_order",
+                context: this,
+                method: "put",
+                data: {'customer_email': localStorage.getItem('customerEmail'), 'recipient_cards': localStorage.getItem('cart')},
+                dataType: "json"
+            }).done(function (data, status) {
+                //localStorage.clear();
+                //return localStorage.length == 0;
+            });
+            
         }
         $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
         $('#backToCustomer').attr('href', 'customer.html?category=' + localStorage.getItem('category'));
