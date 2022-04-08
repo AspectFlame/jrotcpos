@@ -68,6 +68,10 @@
                 //     });
                 // });
             });
+            $('#customer-email').on('change', function(event){
+                localStorage.setItem('customerEmail', $('#customer-email').val());           
+            });
+            localStorage.setItem('customerEmail', $('#customer-email').val());
             $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
         });
     </script>
