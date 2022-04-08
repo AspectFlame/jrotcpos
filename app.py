@@ -32,8 +32,8 @@ def index():
 
 @app.route('/get_items', methods=["POST", "GET"])
 def get_items():
-    category_id = request.form.get('category_id')
-    cursor.execute('SELECT * FROM product_items INNER JOIN product_category ON product_category.id=%s', (category_id))
+    category_id = str(request.form.get('category_id'))
+    cursor.execute('SELECT * FROM product_items INNER JOIN product_category ON product_category.id=%s', (category_id,))
     data = cursor.fetchall()
     response = jsonify(data)
     return response
