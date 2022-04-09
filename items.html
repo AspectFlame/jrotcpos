@@ -141,15 +141,19 @@
                         $('#recipient-email').selectpicker('refresh');
 
                         function checkInput() {
+                            valid  = false;
                             if ($('#recipientModal').find('#recipient-email').find(":selected").val().length > 0 && $('#recipientModal').find('#recipient-email').find(":selected").val() != 'null' && $('#recipientModal').find('#message-text').val().length > 0) {
                                 for (item of items) {
                                     if ($('#recipientModal').find('#' + item[0] + '_quantity').val().length == 0) {
-                                        return false;
+                                        valid = false;
                                     }
                                 }
-                                return true;
+
+                                valid = true;
                             }
-                            return false;
+
+                            valid = validateAmount();
+                            return valid;
                         }
                             
 
@@ -272,6 +276,24 @@
                             }
                         }
                         return '';
+                    }
+                    
+                    function validateAmount() {
+                        valid = false;
+                        totalQuantity = 0;
+                        amountfields = $('.amountofcarnationsinputfield');
+                        amountfields.each(function(index){
+
+
+                            totalQuantity += $(this).val();
+
+                        });
+                        if (totalQuantity <= 15 || totalQuantity > 1) {
+                            valid = true;
+                        }
+
+                        return valid;
+
                     }
                 </script>
             </div>

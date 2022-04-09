@@ -22,11 +22,15 @@
                 <h2><center><b>Summary of all Orders: </b></center></h2>
             </div>
         </div>
-        <div class="row" id="summaryEmail">
-
+        <div class="row">
+            <div class="col">
+                <div id="summaryEmail"></div>
+            </div>
         </div>
-        <div class="row" id="summaryCards">
-
+        <div class="row">
+            <div class="col mt-5 mb-4">
+                <div id="summaryCards"></div>
+            </div>
         </div>
         <div class="row">
             <div class="col-5 p-3">
@@ -36,7 +40,7 @@
                 <a class="btn btn-info" id="backToCustomer" href = "">Back to Customer Info</a>
             </div>
             <div class="col-5 p-3">
-                <a class="btn btn-primary float-right" onclick=" addOrderToDb()">Finish Order</a>
+                <a class="btn btn-primary float-right" id="orderToDB" onclick="addOrderToDb()">Finish Order</a>
             </div>
         </div>
     </div>
@@ -59,7 +63,7 @@
                 cardsHtml += '</div></div>';
             }
             $('#summaryCards').html(cardsHtml);
-            $('#summaryEmail').html('<p><b>Your Email:</b></p>' + customerEmail + '<div class="col"></div>');
+            $('#summaryEmail').html('<p><center><b>Your Email: ' + customerEmail + '</b></center></p>');
             
         }
         function getItemNameFromId(id) {
@@ -93,13 +97,18 @@
                 data: {'customer_email': localStorage.getItem('customerEmail'), 'recipient_cards': localStorage.getItem('cart')},
                 dataType: "json"
             }).done(function (data, status) {
-                //localStorage.clear();
-                //return localStorage.length == 0;
+                localStorage.clear();
+                $('#orderToDB').html('<p><b>Order Placed</b></p>');
             });
             
         }
+        
         $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
         $('#backToCustomer').attr('href', 'customer.html?category=' + localStorage.getItem('category'));
+
+        function disabledFinish() {
+            $('#orderToDB').addClass('disabled');
+        }
 
     </script>
 </body>
