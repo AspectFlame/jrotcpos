@@ -87,7 +87,7 @@
                             result += '<div class="col-5"><b>' + item[1] + '</b></div>';
                             result += '<div class="col-2"><p>$' + item[3] + '</p></div>';
                             result += '<div class="col-5    ">';
-                            result += '<input type="number" min="0" class="amountofcarnationsinputfield" id="' + item[0] + '_quantity" size="4">'
+                            result += '<input type="number" min=0 class="amountofcarnationsinputfield" value=0 id="' + item[0] + '_quantity" size="4">'
                             result += '</div></div>';
                         }
                         $('#carnation_desc').html(result);
@@ -123,6 +123,7 @@
                             for (user of users){
                                 userEmails.push(user[3]);
                             }
+                            localStorage.setItem('userEmails', JSON.stringify(userEmails));       
                         });
                     });
                     
@@ -141,7 +142,7 @@
                         $('#recipient-email').selectpicker('refresh');
 
                         function checkInput() {
-                            valid  = false;
+                            valid = false;
                             if ($('#recipientModal').find('#recipient-email').find(":selected").val().length > 0 && $('#recipientModal').find('#recipient-email').find(":selected").val() != 'null' && $('#recipientModal').find('#message-text').val().length > 0) {
                                 for (item of items) {
                                     if ($('#recipientModal').find('#' + item[0] + '_quantity').val().length == 0) {
@@ -151,8 +152,9 @@
 
                                 valid = true;
                             }
-
-                            valid = validateAmount();
+                            if (valid === true) {
+                                valid = validateAmount();
+                            }
                             return valid;
                         }
                             
@@ -283,17 +285,15 @@
                         totalQuantity = 0;
                         amountfields = $('.amountofcarnationsinputfield');
                         amountfields.each(function(index){
-
-
-                            totalQuantity += $(this).val();
-
+                            totalQuantity += parseInt($(this).val());
                         });
-                        if (totalQuantity <= 15 || totalQuantity > 1) {
+                        if (totalQuantity > 15 || totalQuantity < 1) {
+                            valid = false;
+                        }
+                        else {
                             valid = true;
                         }
-
                         return valid;
-
                     }
                 </script>
             </div>
