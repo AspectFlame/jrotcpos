@@ -46,24 +46,20 @@
     </div>
     <script>
         $(document).ready(function () {
-            users = null;
-            userEmails = null;
-            $.ajax({
-                url: "http://localhost:5001/get_users",
-                context: this,
-                method: "post",
-                dataType: "json"
-            }).done(function (data, status) {
-                users = data;
-                userEmails = new Array();
-                $('#customer-email').append('<option value="null" selected>Nothing Selected</option>');
-                for (user of users){
-                    userEmails.push(user[3]);
-                    $('#customer-email').append('<option value="' + user[3] + '">' + user[3] + '</option>');
+            userEmails = JSON.parse(localStorage.getItem('userEmails'));
+            cart = JSON.parse(localStorage.getItem('cart'));
+            for (item of cart){
+                emailindex = userEmails.indexOf(item.recipientEmail);
+                if (emailindex > -1) {
+                    userEmails.splice(emailindex, 1);
                 }
-                $('#customer-email').selectpicker('refresh');
-                
-            });
+            }
+
+            for (email of userEmails) {                
+                $('#customer-email').append('<option value="' + email + '">' + email + '</option>');
+            }
+            $('#customer-email').selectpicker('refresh');
+            
             $('#customer-email').on('change', function(event){
                 localStorage.setItem('customerEmail', $('#customer-email').val());       
                 if ($('#customer-email').val() !== 'null') {
