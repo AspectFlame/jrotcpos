@@ -28,8 +28,13 @@
             </div>
         </div>
         <div class="row">
-            <div class="col mt-5 mb-4">
+            <div class="col-9 mt-5 mb-4">
                 <div id="summaryCards"></div>
+            </div>
+            <div class="col-3">
+                <div class="card bg-light text-dark">
+                    <div class="card-body" id="cartsummary"></div>
+                  </div>
             </div>
         </div>
         <div class="row">
@@ -75,19 +80,62 @@
             return '';
         }
         $(document).ready(function () {
-            $.ajax({
-                url: "http://localhost:5001/get_items",
-                context: this,
-                method: "post",
-                data: {'category_id': localStorage.getItem('category')},
-                dataType: "json"
-            }).done(function (data, status) {
-                items = data;
-                recipientCards = JSON.parse(localStorage.getItem('cart'));
-                customerEmail = localStorage.getItem('customerEmail');
-                refreshCardsDiv();
-            });
+            items = JSON.parse(localStorage.getItem('itemsForCategory'));
+            recipientCards = JSON.parse(localStorage.getItem('cart'));
+            customerEmail = localStorage.getItem('customerEmail');
+            refreshCardsDiv();
+            refreshCartSummary();            
         });
+
+        function refreshCartSummary() {
+            cartSummary = '';
+            totals = new Array();
+            console.log("sad budgie noises");
+
+            for (card of recipientCards) {
+                carditems = card.values;
+                i =0;
+                for (key in carditems) {
+                    val = carditems[key];
+                    if (!totals[i])
+                    {
+                        totals[i] = 0;
+                    }
+                    totals[i] += parseInt(carditems[key]);
+                    i++;
+                }
+
+            }
+
+            console.log('total..' + totals);
+            cartSummary += ('<div class="row">');
+                cartSummary += ('<div class="col">');
+                    cartSummary += ('<h6>Cart Summary:</h6>');
+                    cartSummary += ('</div>');
+                    cartSummary += ('</div>');
+            for (let i=0; i<items.length; i++) {
+            item = items[i];    
+            cartSummary += ('<div class="row">');
+                cartSummary += ('<div class="col">');
+                    cartSummary += ('<p>' + item[1] + '- ' + totals[i] + '</p>');
+                    cartSummary += ('</div>');
+                    cartSummary += ('</div>');
+            }
+            totalMoney = 0;
+            totalQuantity = 0;
+            for (let i=0; i<totals.length; i++) {
+                totalQuantity += totals[i];
+            }
+            totalMoney = totalQuantity * 2;
+            cartSummary += ('<div class="row">');
+                cartSummary += ('<div class="col">');
+                    cartSummary += ('<h6>Grand Total: $'+ totalMoney + '</h6>');
+                    cartSummary += ('</div>');
+                    cartSummary += ('</div>');
+
+                    $('#cartsummary').html(cartSummary);
+        }
+
         function addOrderToDb() {
 
             $.ajax({
