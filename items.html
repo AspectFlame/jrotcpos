@@ -81,6 +81,7 @@
                     userEmails = null;
                     var recipientCards = new Array();
                     function createButtons(data) {
+                        $('#carnation_desc').html('');
                         result = '';
                         for (item of data) {
                             result += '<div class="row">';
@@ -104,13 +105,12 @@
                             dataType: "json"
                         }).done(function (data, status) {
                             items = data;
-                            createButtons(data);
+                            localStorage.setItem('itemsForCategory', JSON.stringify(items));    
                             if (localStorage.getItem('cart')) {
                                 recipientCards = JSON.parse(localStorage.getItem('cart'));
                                 refreshCardsDiv();
                             }
-    
-                        });
+                        });                        
 
                         $.ajax({
                             url: "http://localhost:5001/get_users",
@@ -186,11 +186,14 @@
                             modal.find('#saveRecipient').prop('disabled', !checkInput());
                         });
 
+                        createButtons(JSON.parse(localStorage.getItem('itemsForCategory')));
+
                         modal.find('.amountofcarnationsinputfield').blur(function(event){
                             var amountfield = $(this);
                             if (amountfield.val()<0) {
                                 amountfield.val(0);
-                            }   
+                            }
+                               
                         });
                         for (item of items) {
                             modal.find('#' + item[0] + '_quantity').blur(function(event){

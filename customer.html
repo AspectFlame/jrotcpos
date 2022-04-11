@@ -54,21 +54,28 @@
                     userEmails.splice(emailindex, 1);
                 }
             }
+            cusemail = localStorage.getItem('customerEmail');
+
+            $('#customer-email').append('<option value="">Select</option>');
 
             for (email of userEmails) {                
-                $('#customer-email').append('<option value="' + email + '">' + email + '</option>');
+                $('#customer-email').append('<option value="' + email + '"' + (cusemail === email ? 'selected':'') + '>' + email + '</option>');
             }
             $('#customer-email').selectpicker('refresh');
             
             $('#customer-email').on('change', function(event){
                 localStorage.setItem('customerEmail', $('#customer-email').val());       
-                if ($('#customer-email').val() !== 'null') {
+                
+                if ($('#customer-email').val() !== '') {
                     $('#goToSummary').removeClass('disabled');
                 }
                 else {
                     $('#goToSummary').addClass('disabled');
                 }
             });
+            if (($('#customer-email option:selected').length > 0) && ($('#customer-email').val() !== '')) {
+                $('#goToSummary').removeClass('disabled');
+            }
             localStorage.setItem('customerEmail', $('#customer-email').val());
             $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
         });
