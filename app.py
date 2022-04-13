@@ -70,7 +70,7 @@ def create_order():
     data = cursor.fetchall()
     orderid = data[0][0]
     if orderid == 0:
-        return jsonify({success: False, error: 'Order ID not found'})
+        return jsonify({'success': False, error: 'Order ID not found'})
     print(orderid)
     for card in recipientCardJSON: 
         print(card['recipientEmail'])
@@ -80,14 +80,14 @@ def create_order():
         data = cursor.fetchall()
         order_recipient_id = data[0][0]
         if (order_recipient_id == 0):
-            return jsonify({success: False, error: 'Order recipient ID not found'})
+            return jsonify({'success': False, error: 'Order recipient ID not found'})
         cardValues = card['values']
         print(cardValues)
         for key in cardValues:
             print(key, cardValues[key])
             cursor.execute('insert into order_recipient_items (order_recipient_fk, product_items_fk, quantity) values (%s, %s, %s)', (order_recipient_id, key, cardValues[key]))
 
-    response = jsonify({success: True})
+    response = jsonify({'success': True})
     return response
 
 @app.route('/get_order_info', methods=["GET"])
