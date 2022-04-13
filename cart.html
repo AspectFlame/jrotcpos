@@ -38,13 +38,16 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-5 p-3">
+            <div class="col-3 p-3">
+                <a class="btn btn-dark float-left" id="backHome" href = "">Back Home</a>
+            </div>
+            <div class="col-3 p-3">
                 <a class="btn btn-secondary float-left" id="backToOrders" href = "">Back to Orders</a>
             </div>
-            <div class="col-2 p-3">
+            <div class="col-3 p-3">
                 <a class="btn btn-info" id="backToCustomer" href = "">Back to Customer Info</a>
             </div>
-            <div class="col-5 p-3">
+            <div class="col-3 p-3">
                 <a class="btn btn-primary float-right" id="orderToDB" onclick="addOrderToDb()">Finish Order</a>
             </div>
         </div>
@@ -147,16 +150,18 @@
             }).done(function (data, status) {
                 localStorage.clear();
                 $('#orderToDB').html('<p><b>Order Placed</b></p>');
+                $('#orderToDB').addClass('disabled');
+                $('#backToCustomer').addClass('disabled');
+                $('#backToOrders').addClass('disabled');
             });
             
         }
         
         $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
+        $('#backHome').attr('href', 'index.html?category=' + localStorage.getItem('category'));
         $('#backToCustomer').attr('href', 'customer.html?category=' + localStorage.getItem('category'));
 
-        function disabledFinish() {
-            $('#orderToDB').addClass('disabled');
-        }
+        
 
     </script>
 </body>
