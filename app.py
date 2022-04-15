@@ -47,8 +47,8 @@ def get_users():
     response = jsonify(data)
     return response
 
-def get_users_by_email(email):
-    cursor.execute('SELECT * FROM users WHERE expiration_date is null and email=%s', (email,))
+def get_users_by_name(email):
+    cursor.execute('SELECT * FROM users WHERE expiration_date is null and first_name=%s and last_name=%s', (first_name,last_name,))
     userrec = cursor.fetchall()
     return userrec
 

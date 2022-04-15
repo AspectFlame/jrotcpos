@@ -68,7 +68,7 @@
                 var aCard = recipientCards[i];
                 cardsHtml += '<div class="col-4 mb-2">';
                 cardsHtml += '<div class="card h-100">';
-                cardsHtml += '<div class="card-header"><b>' + aCard.recipientEmail + '</b></div>';
+                cardsHtml += '<div class="card-header"><b>' + aCard.recipientName + '</b></div>';
                 cardsHtml += '<div class="card-body"><p class="mb-2">' + aCard.message + '</p>';
                 for (let [key, value] of Object.entries(aCard.values)) {
                     cardsHtml += '<p class="mb-0">' + getItemNameFromId(key) + ' x' + value + '</p>';
@@ -92,7 +92,7 @@
             userEmails = JSON.parse(localStorage.getItem('userEmails'));
             cart = JSON.parse(localStorage.getItem('cart'));
             for (item of cart){
-                emailindex = userEmails.indexOf(item.recipientEmail);
+                emailindex = userEmails.indexOf(item.recipientName);
                 if (emailindex > -1) {
                     userEmails.splice(emailindex, 1);
                 }

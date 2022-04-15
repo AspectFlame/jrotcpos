@@ -37,8 +37,8 @@
                     <div class="modal-body">
                         <form>
                         <div class="form-group">
-                            <label for="recipient-email" class="col-form-label">Recipient Email:</label>
-                            <select id="recipient-email" class="selectpicker show-tick" data-live-search="true" data-size="10">
+                            <label for="recipient-name" class="col-form-label">Recipient Name:</label>
+                            <select id="recipient-name" class="selectpicker show-tick" data-live-search="true" data-size="10">
                             </select>
                         </div>
                         <div class="form-group">
@@ -133,17 +133,17 @@
                         var currentmode = button.data('mode');// Extract info from data-* attributes
                         var index = button.data('index');
                         modal.find('.modal-title').text('Add recipient');
-                        if ($('#recipient-email > option').length === 0) {
-                            $('#recipient-email').append('<option value="null" selected>Nothing Selected</option>');
+                        if ($('#recipient-name > option').length === 0) {
+                            $('#recipient-name').append('<option value="null" selected>Nothing Selected</option>');
                             for (user of userEmails) {
-                                $('#recipient-email').append('<option value="' + user + '">' + user + '</option>');
+                                $('#recipient-name').append('<option value="' + user + '">' + user + '</option>');
                             }
                         }
-                        $('#recipient-email').selectpicker('refresh');
+                        $('#recipient-name').selectpicker('refresh');
 
                         function checkInput() {
                             valid = false;
-                            if ($('#recipientModal').find('#recipient-email').find(":selected").val().length > 0 && $('#recipientModal').find('#recipient-email').find(":selected").val() != 'null' && $('#recipientModal').find('#message-text').val().length > 0) {
+                            if ($('#recipientModal').find('#recipient-name').find(":selected").val().length > 0 && $('#recipientModal').find('#recipient-name').find(":selected").val() != 'null' && $('#recipientModal').find('#message-text').val().length > 0) {
                                 for (item of items) {
                                     if ($('#recipientModal').find('#' + item[0] + '_quantity').val().length == 0) {
                                         valid = false;
@@ -165,8 +165,8 @@
                             // and set the values on the modal
                             var arrayIndex = button.data('index');
                             var aCard = recipientCards[arrayIndex];
-                            modal.find('#recipient-email').val(aCard.recipientEmail);
-                            $('#recipient-email').selectpicker('refresh');
+                            modal.find('#recipient-name').val(aCard.recipientEmail);
+                            $('#recipient-name').selectpicker('refresh');
                             modal.find('#message-text').val(aCard.message);
                             modal.find('.modal-title').text('Edit recipient');
                             values = aCard.values;
@@ -178,7 +178,7 @@
 
                         modal.find('#saveRecipient').prop('disabled', !checkInput());
 
-                        modal.find('#recipient-email').on('change', function(event){
+                        modal.find('#recipient-name').on('change', function(event){
                             modal.find('#saveRecipient').prop('disabled', !checkInput());
                         });
 
@@ -207,9 +207,9 @@
                     $('#saveRecipient').click(function(event){
                         if ($('#saveRecipient').attr('data-currentmode') === 'add'){
                             var newCard = new Object();
-                            newCard.recipientEmail = $('#recipientModal').find('#recipient-email').val();
-                            $('#recipientModal').find('#recipient-email').val('null');
-                            $('#recipient-email').selectpicker('refresh');
+                            newCard.recipientEmail = $('#recipientModal').find('#recipient-name').val();
+                            $('#recipientModal').find('#recipient-name').val('null');
+                            $('#recipient-name').selectpicker('refresh');
                             newCard.message = $('#recipientModal').find('#message-text').val();
                             $('#recipientModal').find('#message-text').val('');
                             newCard.values = {};
@@ -225,9 +225,9 @@
                             // and pull the corresponding card from the array
                             var index = $('#saveRecipient').attr('data-index')
                             var newCard = new Object();
-                            recipientCards[index].recipientEmail = $('#recipientModal').find('#recipient-email').val();
-                            $('#recipientModal').find('#recipient-email').val('null');
-                            $('#recipient-email').selectpicker('refresh');
+                            recipientCards[index].recipientName = $('#recipientModal').find('#recipient-name').val();
+                            $('#recipientModal').find('#recipient-name').val('null');
+                            $('#recipient-name').selectpicker('refresh');
                             recipientCards[index].message = $('#recipientModal').find('#message-text').val();
                             $('#recipientModal').find('#message-text').val('');
                             recipientCards[index].values = {};
