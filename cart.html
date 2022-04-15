@@ -23,6 +23,12 @@
             </div>
         </div>
         <div class="row">
+            <div class="form-group col text-center">
+                <label for="customer-email" class="col-form-label">Customer Email:</label>
+                <select id="customer-email" class="selectpicker show-tick" data-live-search="true" data-size="10"></select>
+            </div>
+        </div>
+        <div class="row">
             <div class="col">
                 <div id="summaryEmail"></div>
             </div>
@@ -83,6 +89,38 @@
             return '';
         }
         $(document).ready(function () {
+            userEmails = JSON.parse(localStorage.getItem('userEmails'));
+            cart = JSON.parse(localStorage.getItem('cart'));
+            for (item of cart){
+                emailindex = userEmails.indexOf(item.recipientEmail);
+                if (emailindex > -1) {
+                    userEmails.splice(emailindex, 1);
+                }
+            }
+            cusemail = localStorage.getItem('customerEmail');
+
+            $('#customer-email').append('<option value="">Select</option>');
+
+            for (email of userEmails) {                
+                $('#customer-email').append('<option value="' + email + '"' + (cusemail === email ? 'selected':'') + '>' + email + '</option>');
+            }
+            $('#customer-email').selectpicker('refresh');
+            
+            $('#customer-email').on('change', function(event){
+                localStorage.setItem('customerEmail', $('#customer-email').val());       
+                
+                if ($('#customer-email').val() !== '') {
+                    $('#goToSummary').removeClass('disabled');
+                }
+                else {
+                    $('#goToSummary').addClass('disabled');
+                }
+            });
+            if (($('#customer-email option:selected').length > 0) && ($('#customer-email').val() !== '')) {
+                $('#goToSummary').removeClass('disabled');
+            }
+            localStorage.setItem('customerEmail', $('#customer-email').val());
+            $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
             items = JSON.parse(localStorage.getItem('itemsForCategory'));
             recipientCards = JSON.parse(localStorage.getItem('cart'));
             customerEmail = localStorage.getItem('customerEmail');
@@ -160,8 +198,6 @@
         $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
         $('#backHome').attr('href', 'index.html?category=' + localStorage.getItem('category'));
         $('#backToCustomer').attr('href', 'customer.html?category=' + localStorage.getItem('category'));
-
-        
 
     </script>
 </body>
