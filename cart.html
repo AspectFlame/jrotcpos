@@ -24,13 +24,8 @@
         </div>
         <div class="row">
             <div class="form-group col text-center">
-                <label for="customer-email" class="col-form-label">Customer Email:</label>
+                <label for="customer-email" class="col-form-label">Your Email:</label>
                 <select id="customer-email" class="selectpicker show-tick" data-live-search="true" data-size="10"></select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div id="summaryEmail"></div>
             </div>
         </div>
         <div class="row">
@@ -44,17 +39,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-3 p-3">
+            <div class="col-5 p-3">
                 <a class="btn btn-dark float-left" id="backHome" href = "">Back Home</a>
             </div>
-            <div class="col-3 p-3">
+            <div class="col-2 p-3">
                 <a class="btn btn-secondary float-left" id="backToOrders" href = "">Back to Orders</a>
             </div>
-            <div class="col-3 p-3">
-                <a class="btn btn-info" id="backToCustomer" href = "">Back to Customer Info</a>
-            </div>
-            <div class="col-3 p-3">
-                <a class="btn btn-primary float-right" id="orderToDB" onclick="addOrderToDb()">Finish Order</a>
+            <div class="col-5 p-3">
+                <a class="btn btn-light float-right" id="orderToDB" onclick="addOrderToDb()">Finish Order</a>
             </div>
         </div>
     </div>
@@ -76,9 +68,7 @@
                 cardsHtml += '</div>';
                 cardsHtml += '</div></div>';
             }
-            $('#summaryCards').html(cardsHtml);
-            $('#summaryEmail').html('<p><center><b>Your Email: ' + customerEmail + '</b></center></p>');
-            
+            $('#summaryCards').html(cardsHtml);            
         }
         function getItemNameFromId(id) {
             for (item of items) {
@@ -89,10 +79,11 @@
             return '';
         }
         $(document).ready(function () {
+            items = JSON.parse(localStorage.getItem('itemsForCategory'));
+            recipientCards = JSON.parse(localStorage.getItem('cart'));
             userEmails = JSON.parse(localStorage.getItem('userEmails'));
-            cart = JSON.parse(localStorage.getItem('cart'));
-            for (item of cart){
-                emailindex = userEmails.indexOf(item.recipientName);
+            for (item of recipientCards){
+                emailindex = userEmails.indexOf(item.recipientEmail);
                 if (emailindex > -1) {
                     userEmails.splice(emailindex, 1);
                 }
@@ -105,34 +96,27 @@
                 $('#customer-email').append('<option value="' + email + '"' + (cusemail === email ? 'selected':'') + '>' + email + '</option>');
             }
             $('#customer-email').selectpicker('refresh');
-            
+
             $('#customer-email').on('change', function(event){
                 localStorage.setItem('customerEmail', $('#customer-email').val());       
                 
                 if ($('#customer-email').val() !== '') {
-                    $('#goToSummary').removeClass('disabled');
+                    $('#orderToDB').removeClass('disabled');
                 }
                 else {
-                    $('#goToSummary').addClass('disabled');
+                    $('#orderToDB').addClass('disabled');
                 }
             });
             if (($('#customer-email option:selected').length > 0) && ($('#customer-email').val() !== '')) {
-                $('#goToSummary').removeClass('disabled');
+                $('#orderToDB').removeClass('disabled');
             }
-            localStorage.setItem('customerEmail', $('#customer-email').val());
-            $('#backToOrders').attr('href', 'items.html?category=' + localStorage.getItem('category'));
-            items = JSON.parse(localStorage.getItem('itemsForCategory'));
-            recipientCards = JSON.parse(localStorage.getItem('cart'));
-            customerEmail = localStorage.getItem('customerEmail');
             refreshCardsDiv();
-            refreshCartSummary();            
+            refreshCartSummary(); 
         });
 
         function refreshCartSummary() {
             cartSummary = '';
             totals = new Array();
-            console.log("sad budgie noises");
-
             for (card of recipientCards) {
                 carditems = card.values;
                 i =0;
@@ -148,7 +132,6 @@
 
             }
 
-            console.log('total..' + totals);
             cartSummary += ('<div class="row">');
                 cartSummary += ('<div class="col">');
                     cartSummary += ('<h6>Cart Summary:</h6>');
@@ -199,6 +182,9 @@
         $('#backHome').attr('href', 'index.html?category=' + localStorage.getItem('category'));
         $('#backToCustomer').attr('href', 'customer.html?category=' + localStorage.getItem('category'));
 
+        
+
     </script>
 </body>
 </html>
+
