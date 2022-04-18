@@ -49,10 +49,10 @@
     function generateCard(array) {
         cardsHtml = '<div class="col-4 mb-2">';
         cardsHtml += '<div class="card h-100">';
-        cardsHtml += '<div class="card-header"><b>Customer email: </b>' + array[0][1] + '<br><b>Recipient email: </b>' + array[0][3] + '</div>';
+        cardsHtml += '<div class="card-header"><b>Customer email: </b>' + array[0][1] + '<br><b>Recipient Name and Email: </b>' + array[0][3] + ' ' + array[0][4] + ', ' + array[0][5] + '<br><b>Recipient Schedule: </b>' + array[0][6] + ', ' + array[0][7] + ', ' + array[0][8] + ', ' + array[0][9] + ', ' + array[0][10] + ', ' + array[0][11] + ', ' + array[0][12] + ', ' + array[0][13] +'</div>';
         cardsHtml += '<div class="card-body"><p class="mb-2">' + array[0][2] + '</p>';
         for (detail of array) {
-            cardsHtml += '<p class="mb-0">' + detail[4] + ' x' + detail[5] + '</p>';
+            cardsHtml += '<p class="mb-0">' + detail[14] + ' x' + detail[15] + '</p>'; 
         }
         cardsHtml += '</div>';
         cardsHtml += '<div class="card-footer">';
