@@ -18,8 +18,22 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col">
+            <div class="col-4">
                 <h2>All orders</h2>
+            </div>
+            <div class="col-8">
+                <h2>Filter:</h2>
+                <div class="row">
+                    <div class="col-4">
+                        <input type="text" id="cusfilter" placeholder="Enter Customer Email: "/>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-block btn-primary mb-3 ml-2" onclick="filterordersByEmail()" >Filter</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-block btn-primary"  onclick="clearFilter()" >Clear</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row" id="display_orders">
@@ -55,6 +69,7 @@
 
     function getAllOrders() {
         orders = {};
+        ordersinfoobj = new Object();
         $.ajax({
             url: "http://localhost:5001/get_order_info",
             context: this,
@@ -64,91 +79,137 @@
         }).done(function (data, status) {
             items = data;
             for (item of items) {
-                // instead of just dealing with an array of values, it will be nice to deal with a json object so you know what array[5] represents
-            // so in the loop below if you can push an object into the orders like so..
-            // ideally you want to make an array of objects for each recipient containing all the order info 
-            // and then an array of objects for customer containing all the recipient objects u created in the prev line for that customer
-            // so orderinfo parent object will look like this for eg.
-            /*
-            {
-                "orderid" : 123,
-                "customeremail" : "shy@test.com",
-                "recipients" : [
-                        { "orderid" : 33,
-                            "recipientemail" : "kk@test.com",
-                        "orderdetails" : [
-                            {
-                            "orderdetailid" : 5,
-                            "product" : "white carnation",
-                            "qty" : 5
-                            },
-                            {
-                                "orderdetailid" : 6,
-                                "product" : "red carnation",
-                                "qty" : 4
-                            }
-                        ]  
-                        },
-                        "orderid" : 34,
-                            "recipientemail" : "aa@test.com",
-                        "orderdetails" : [
-                            {
-                            "orderdetailid" : 15,
-                            "product" : "white carnation",
-                            "qty" : 5
-                            },
-                            {
-                                "orderdetailid" : 16,
-                                "product" : "red carnation",
-                                "qty" : 4
-                            }
-                        ]  
-                ]
-            }
-            */
+                ordersobj = ordersinfoobj[item[0]];
+                if (ordersobj == undefined){
+                    ordersobj = new Object();
+                    ordersobj.orderid = item[0];
+                    ordersobj.customeremail = item[1];
 
-            // so then u will be passing the entire object to the generate card method and 
-            // for each order id, you will iterate through the recipients object array 
-            // and you can have access to the properties inside the object. 
-            // it is more intuitive like that and easier to understand later as well
-            // can you first build the object like I have shown above
-            // once u build the object you set it in local storage so you can see how it looks for debugging
+                    ordersinfoobj[item[0]] = ordersobj;
+                }                    
+                    orderrecipients = ordersobj.recipients;
+                    if (orderrecipients == undefined){
+                        orderrecipients = new Array();
+                        ordersobj.recipients = orderrecipients;
+                    }
 
-            // orders
-                if (orders[item[0]]) {
-                    orders[item[0]].push(item)
-                } else {
-                    orders[item[0]] = [item]
+                    recipientfound = false;
+                    orderrecipient = undefined;
+                    for (index in orderrecipients) {
+                        arecipient = orderrecipients[index];
+                        if (arecipient.id === item[16]) {
+                            recipientfound= true;
+                            orderrecipient = arecipient;
+                            break;
+                        }
+                    }
+
+                    if (!recipientfound){
+                        orderrecipient = new Object();
+                        // set all recipient stuff here
+                        orderrecipient.id = item[16];
+                        orderrecipient.gift_msg = item[2];
+                        orderrecipient.fn = item[3];
+                        orderrecipient.ln = item[4];
+                        orderrecipient.email = item[5];
+                        orderrecipient.b1 = item[6];
+                        orderrecipient.b2 = item[7];
+                        orderrecipient.b3 = item[8];
+                        orderrecipient.b4 = item[9];
+                        orderrecipient.b5 = item[10];
+                        orderrecipient.b6 = item[11];
+                        orderrecipient.b7 = item[12];
+                        orderrecipient.adv = item[13];
+                        orderrecipient.orderitems  = new Array();
+
+                        orderrecipients.push(orderrecipient);
+                    } 
+                    
+                    // look at the order items within the recipient
+                    orderitemsforrecipient = orderrecipient.orderitems;
+
+                    if (orderitemsforrecipient == undefined){
+                        orderitemsforrecipient = new Array();
+                        orderrecipient.orderitems = orderitemsforrecipient;
+                    }
+
+                    orderitemfound = false;
+                    anOrderItem = undefined;
+
+                    for (index in orderitemsforrecipient){
+                        orderitem = orderitemsforrecipient[index];
+                        if (orderitem.id === item[17]) {
+                            orderitemfound = true;
+                            anOrderItem = orderitem;
+                            break;
+                        }
+                    }
+
+                    if (!orderitemfound) {
+                        anOrderItem = new Object ();
+                        anOrderItem.id = item[17];
+                        anOrderItem.product_name = item[14];
+                        anOrderItem.quantity = item[15];
+                        orderitemsforrecipient.push(anOrderItem);
+                    }
                 }
-            }
-            for (let [key, value] of Object.entries(orders)) {
+
+            localStorage.setItem("ordersinfoobj", JSON.stringify(ordersinfoobj));
+
+            $('#display_orders').html('');
+            for (let [key, value] of Object.entries(ordersinfoobj)) {
                 $('#display_orders').append(generateCard(value));
             }
         });
     }
 
+    function clearFilter() {
+        ordersinfoobj = JSON.parse(localStorage.getItem("ordersinfoobj"));
+        $('#display_orders').html('');
+        for (let [key, value] of Object.entries(ordersinfoobj)) {
+            $('#display_orders').append(generateCard(value));
+        }
+    }
+
+    function filterordersByEmail() {
+        ordersinfoobj = JSON.parse(localStorage.getItem("ordersinfoobj"));
+        filteredorderinfoobj = new Object();
+        for (let [key,value] of Object.entries(ordersinfoobj)){
+            if (value.customeremail === $('#cusfilter').val()) {
+                filteredorderinfoobj[value.orderid] = value;
+            }
+        }
+
+        $('#display_orders').html('');
+        for (let [key, value] of Object.entries(filteredorderinfoobj)) {
+            $('#display_orders').append(generateCard(value));
+        }
 
 
-    function generateCard(array) {
+    }
+
+
+
+    function generateCard(order) {
         cardsHtml = '<div class="col-4 mb-2">';
-        cardsHtml += '<div class="card h-100">';
-        cardsHtml += '<div class="card-header"><b>Customer email: </b>' + array[0][1] + '<br><b>Recipient Name and Email: </b>' + array[0][3] + ' ' + array[0][4] + ', ' + array[0][5] + '<br><b>Recipient Schedule: </b>' + array[0][6] + ', ' + array[0][7] + ', ' + array[0][8] + ', ' + array[0][9] + ', ' + array[0][10] + ', ' + array[0][11] + ', ' + array[0][12] + ', ' + array[0][13] +'</div>';
-        cardsHtml += '<div class="card-body"><p class="mb-2">' + array[0][2] + '</p>';
-        
-        //i dont know how to make it show each recipients email on the page. If you look at the side monitor on the very bottom, you can see that it
-        //shows how many of each carnation but only shows one email but has all the quantities. I was trying to figure out how to fix that.
-        //one solution for me was to add 'detail[5]' right below here. The issue with that was it that it showed the email for each red carnation, white
-        // carnation, and pink carnation. If you don't want to write it out for me, can you explain how to do it? thx
+        cardsHtml += '<div class="card">';
+        cardsHtml += '<div class="card-header"><b>Customer email: </b>' + order.customeremail +'</div>';
+        for (index in order.recipients) {
+            orderrecipient = order.recipients[index];
+            cardsHtml += '<div class="card-body"><b>Recipient Name and Email: </b>' + orderrecipient.fn + ' ' + orderrecipient.ln + ', ' + orderrecipient.email + '<br><b>Recipient Schedule: </b>' + orderrecipient.b1 + ', ' + orderrecipient.b2 + ', ' + orderrecipient.b3 + ', ' + orderrecipient.b4 + ', ' + orderrecipient.b5 + ', ' + orderrecipient.b6 + ', ' + orderrecipient.b7 + ', ' + orderrecipient.adv + '<br><b>Recipient Message: </b>' + orderrecipient.gift_msg + '</div>';
+            
+            orderitems = orderrecipient.orderitems;
+            for (itemindex in orderitems){
+                orderitem = orderitems[itemindex];
+                cardsHtml += '<div class="row ml-3">' + orderitem.product_name + ' x' + orderitem.quantity + '</div>'; 
 
-
-        for (detail of array) {
-            cardsHtml += '<p class="mb-0">' + detail[14] + ' x' + detail[15] + '</p>'; 
+            }
         }
         cardsHtml += '</div>';
         cardsHtml += '<div class="card-footer">';
         cardsHtml += '<div class="row">';
-        cardsHtml += '<div class="col"><button type="button" class="btn btn-block btn-primary" id="confirmbutton" onclick="confirmOrder(' + array[0][0] + ')">Confirm</button></div>'
-        cardsHtml += '<div class="col"><button type="button" class="btn btn-block btn-danger" id="deletebutton" onclick="deleteOrder(' + array[0][0] + ')">Delete</button></div>'
+        cardsHtml += '<div class="col"><button type="button" class="btn btn-block btn-primary"  onclick="confirmOrder(' + order.orderid + ')">Confirm</button></div>'
+        cardsHtml += '<div class="col"><button type="button" class="btn btn-block btn-danger"  onclick="deleteOrder(' + order.orderid + ')">Delete</button></div>'
         cardsHtml += '</div></div></div></div>';
         return cardsHtml;
 
