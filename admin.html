@@ -35,6 +35,9 @@
                     </div>
                 </div>
             </div>
+            <div class="col">
+                <h2>All orders</h2>
+            </div>
         </div>
         <div class="row" id="display_orders">
         </div>
@@ -204,6 +207,32 @@
                 cardsHtml += '<div class="row ml-3">' + orderitem.product_name + ' x' + orderitem.quantity + '</div>'; 
 
             }
+    orders = {};
+     $.ajax({
+        url: "http://localhost:5001/get_order_info",
+        context: this,
+        method: "get",
+        dataType: "json"
+    }).done(function (data, status) {
+        items = data;
+        for (item of items) {
+            if (orders[item[0]]) {
+                orders[item[0]].push(item)
+            } else {
+                orders[item[0]] = [item]
+            }
+        }
+        for (let [key, value] of Object.entries(orders)) {
+            $('#display_orders').append(generateCard(value));
+        }
+    });
+    function generateCard(array) {
+        cardsHtml = '<div class="col-4 mb-2">';
+        cardsHtml += '<div class="card h-100">';
+        cardsHtml += '<div class="card-header"><b>Customer email: </b>' + array[0][1] + '<br><b>Recipient email: </b>' + array[0][3] + '</div>';
+        cardsHtml += '<div class="card-body"><p class="mb-2">' + array[0][2] + '</p>';
+        for (detail of array) {
+            cardsHtml += '<p class="mb-0">' + detail[4] + ' x' + detail[5] + '</p>';
         }
         cardsHtml += '</div>';
         cardsHtml += '<div class="card-footer">';
@@ -214,6 +243,10 @@
         return cardsHtml;
 
         
+        cardsHtml += '<div class="col"><button type="button" class="btn btn-block btn-primary" onclick="">Confirm</button></div>'
+        cardsHtml += '<div class="col"><button type="button" class="btn btn-block btn-dark" onclick="">Modify</button></div>'
+        cardsHtml += '</div></div></div></div>';
+        return cardsHtml;
     }
 </script>
 </html>

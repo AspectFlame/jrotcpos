@@ -121,6 +121,12 @@ def confirm_order():
     print(orderid)
     cursor.execute('UPDATE order_recipients SET confirmed=true WHERE order_id_fk = %s', (orderid,))
     cursor.execute('select * from order_recipients where order_id_fk = %s', (orderid,))
+
+
+@app.route('/get_order_info', methods=["GET"])
+def get_order_info():
+    cursor.execute('select o.id order_id, u.email customer_email, or_rec.gift_msg recipient_gift_msg, rec.email recipient_email, pi.name product_name, ori.quantity order_quantity from orders o, users u, users rec, order_recipients or_rec, order_recipient_items ori, product_items pi where o.customer_users_fk = u.id and or_rec.order_id_fk = o.id and or_rec.recipient_users_fk = rec.id and ori.order_recipient_fk = or_rec.id and ori.product_items_fk = pi.id')
+
     data = cursor.fetchall()
     response = jsonify(data)
     return response
