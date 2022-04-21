@@ -25,7 +25,7 @@
                 <h2>Filter:</h2>
                 <div class="row">
                     <div class="col-4">
-                        <input type="text" id="cusfilter" placeholder="Enter Block 2: "/>
+                        <input type="text" id="cusfilter" placeholder="Enter Block 2 Number: "/>
                     </div>
                     <div class="col-4">
                         <button type="button" class="btn btn-block btn-primary mb-3 ml-2" onclick="filterordersByEmail()" >Filter</button>
@@ -153,7 +153,7 @@
         ordersinfoobj = JSON.parse(localStorage.getItem("ordersinfoobj"));
         filteredorderinfoobj = new Object();
         for (let [key,value] of Object.entries(ordersinfoobj)){
-            if (value.b2 === $('#cusfilter').val()) {
+            if (value.customeremail === $('#cusfilter').val()) {
                 filteredorderinfoobj[value.orderid] = value;
             }
         }
