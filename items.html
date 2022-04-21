@@ -22,6 +22,7 @@
         <div class="row">
             <div class="p-3 mb-2 bg-light text-dark">
                 <h2><center>Recipient Info</center></h2>
+                <p><center><b>Please enter all the information required for each recipient you would like to send carnations to. Once all the information required is filled out, you may either click continue to proceed or add another recipient.</b></center></p>
                 <p><center><b>Please enter all the information required for each recipient you would like to send carnations to. Once all the information required is filled out, you may either click continue to proceed or add another recipient. Note: HCPS emails reqired.</b></center></p>
                 <div id="recipientCards" class="row m-2">
                 </div>
@@ -37,6 +38,8 @@
                     <div class="modal-body">
                         <form>
                         <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Recipient Name and 2nd block:</label>
+                            <select id="recipient-name" class="selectpicker show-tick" data-live-search="true" data-size="10">
                             <label for="recipient-email" class="col-form-label">Recipient Email:</label>
                             <select id="recipient-email" class="selectpicker show-tick" data-live-search="true" data-size="10">
                             </select>
@@ -46,6 +49,7 @@
                             <textarea class="form-control" id="message-text"></textarea>
                         </div>
                         <div class="form-group">
+                            <label for="amount_of_carnations" class="col-form-label">Amount of Carnations: (Note: Total must be between 1-15)</label>
                             <label for="amount_of_carnations" class="col-form-label">Amount of Carnations:</label>
                             <div class="row" id="amount_of_carnations">
                                 <div class="col" id="carnation_desc">
@@ -67,6 +71,10 @@
                         <a class="btn btn-secondary float-left" href = "index.html">Back to Home</a>
                     </div>
                     <div class="col-2">
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#recipientModal" data-mode="add">New Order</button>
+                    </div>
+                    <div class="col-5">
+                        <a class="btn btn-primary float-right disabled" id="nextPageButton" href = "cart.html">Finish</a>
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#recipientModal" data-mode="add">New Recipient</button>
                     </div>
                     <div class="col-5">
@@ -78,6 +86,7 @@
                 <script>
                     items = null;
                     users = null;
+                    userNames = null;
                     userEmails = null;
                     var recipientCards = new Array();
                     function createButtons(data) {
@@ -95,6 +104,7 @@
                     }
                     params = new URLSearchParams(window.location.search);
                     $(document).ready(function () {
+                        localStorage.setItem('category', params.get('category'));        
                         localStorage.setItem('category', params.get('category'));
                         
                         $.ajax({
@@ -119,6 +129,14 @@
                             dataType: "json"
                         }).done(function (data, status) {
                             users = data;
+                            userNames = new Array();
+                            userEmails = new Array();
+                            for (user of users){
+                                userNames.push({"lastname": user[2], "firstname": user[1], "roomnum": user[6], "email" : user[3]});
+                                userEmails.push(user[3]);
+                            }
+                            localStorage.setItem('userNames', JSON.stringify(userNames));   
+                            localStorage.setItem('userEmails', JSON.stringify(userEmails));    
                             userEmails = new Array();
                             for (user of users){
                                 userEmails.push(user[3]);
@@ -132,6 +150,28 @@
                         var button = $(event.relatedTarget); // Button that triggered the modal
                         var currentmode = button.data('mode');// Extract info from data-* attributes
                         var index = button.data('index');
+                        createButtons(JSON.parse(localStorage.getItem('itemsForCategory')));
+                        if (currentmode === "add") {
+                            modal.find('#recipient-name').val('null');
+                        }
+                        modal.find('.modal-title').text('Add recipient');
+                        if ($('#recipient-name > option').length === 0) {
+                            $('#recipient-name').append('<option value="null" selected>Nothing Selected</option>');
+                            for (user of userNames) {
+                                $('#recipient-name').append('<option data-email="' + user.email + '" value="' + user.lastname + ", " + user.firstname + ", " + user.roomnum + '">' + user.lastname + ", " + user.firstname + ", " + user.roomnum + '</option>');
+                            }
+                        }
+                        $('#recipient-name').selectpicker('refresh');
+
+                        function checkInput() {
+                            valid = false;
+                            selectedrecipient = null;
+                            selectedrecipient = $('#recipientModal').find('#recipient-name').find(":selected");
+                            if (selectedrecipient && selectedrecipient.val() != 'null' && selectedrecipient.val().length > 0) {
+                                for (item of items) {
+                                    itemquantity = $('#recipientModal').find('#' + item[0] + '_quantity');
+                                    if (itemquantity && (!itemquantity.val() || itemquantity.val().length == 0)) {
+
                         modal.find('.modal-title').text('Add recipient');
                         if ($('#recipient-email > option').length === 0) {
                             $('#recipient-email').append('<option value="null" selected>Nothing Selected</option>');
@@ -165,12 +205,16 @@
                             // and set the values on the modal
                             var arrayIndex = button.data('index');
                             var aCard = recipientCards[arrayIndex];
+                            modal.find('#recipient-name').val(aCard.recipientName);
+                            $('#recipient-name').selectpicker('refresh');
                             modal.find('#recipient-email').val(aCard.recipientEmail);
                             $('#recipient-email').selectpicker('refresh');
                             modal.find('#message-text').val(aCard.message);
                             modal.find('.modal-title').text('Edit recipient');
                             values = aCard.values;
                             for (let [key, value] of Object.entries(values)) {
+                                modal.find('#' + key + '_quantity').val(parseInt(value));
+
                                 modal.find('#' + key + '_quantity').val(value);
                             }
                             modal.find("#saveRecipient").attr("data-index", index);
@@ -178,6 +222,7 @@
 
                         modal.find('#saveRecipient').prop('disabled', !checkInput());
 
+                        modal.find('#recipient-name').on('change', function(event){
                         modal.find('#recipient-email').on('change', function(event){
                             modal.find('#saveRecipient').prop('disabled', !checkInput());
                         });
@@ -207,6 +252,10 @@
                     $('#saveRecipient').click(function(event){
                         if ($('#saveRecipient').attr('data-currentmode') === 'add'){
                             var newCard = new Object();
+                            newCard.recipientName = $('#recipientModal').find('#recipient-name').val();
+                            newCard.recipientEmail = $('#recipientModal').find('#recipient-name').find(":selected").attr("data-email");
+                            $('#recipientModal').find('#recipient-name').val('null');
+                            $('#recipient-name').selectpicker('refresh');
                             newCard.recipientEmail = $('#recipientModal').find('#recipient-email').val();
                             $('#recipientModal').find('#recipient-email').val('null');
                             $('#recipient-email').selectpicker('refresh');
@@ -225,6 +274,12 @@
                             // and pull the corresponding card from the array
                             var index = $('#saveRecipient').attr('data-index')
                             var newCard = new Object();
+                            recipientCards[index].recipientName = $('#recipientModal').find('#recipient-name').val();
+                            recipientCards[index].recipientEmail = $('#recipientModal').find('#recipient-name').find(":selected").attr("data-email");
+
+                            $('#recipientModal').find('#recipient-name').val('null');
+                            $('#recipient-name').selectpicker('refresh');
+
                             recipientCards[index].recipientEmail = $('#recipientModal').find('#recipient-email').val();
                             $('#recipientModal').find('#recipient-email').val('null');
                             $('#recipient-email').selectpicker('refresh');
@@ -246,6 +301,7 @@
                             var aCard = recipientCards[i];
                             cardsHtml += '<div class="col-4 mb-2">';
                             cardsHtml += '<div class="card h-100">';
+                            cardsHtml += '<div class="card-header"><b>' + aCard.recipientName + '</b></div>';
                             cardsHtml += '<div class="card-header"><b>' + aCard.recipientEmail + '</b></div>';
                             cardsHtml += '<div class="card-body"><p class="mb-2">' + aCard.message + '</p>';
                             for (let [key, value] of Object.entries(aCard.values)) {
