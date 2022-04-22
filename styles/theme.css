@@ -1,0 +1,52 @@
+.btn-light-pink{
+    color: #ffffff;
+    background-color: #FFADD5;
+    border-color: #FFADD5;
+    letter-spacing: 0.05rem;
+    border-radius: 4px;
+  }
+  
+  .btn-light-pink:hover,
+  .btn-light-pink:active,
+  .btn-light-pink:focus,
+  .btn-light-pink.active {
+    background: #FF99CA;
+    color: #ffffff;
+    border-color: #FF99CA;
+  }
+  
+  
+  .btn-dark-pink{
+    color: #ffffff;
+    background-color: #FF478B;
+    border-color: #FF478B;
+    letter-spacing: 0.05rem;
+    border-radius: 4px;
+  }
+  
+  
+  .btn-dark-pink:hover,
+  .btn-dark-pink:active,
+  .btn-dark-pink:focus,
+  .btn-dark-pink.active {
+    background: #FF337E;
+    color: #ffffff;
+    border-color: #FF337E;
+  }
+  
+  .btn-chill-red{
+    color: #ffffff;
+    background-color: #FD213B;
+    border-color: #FD213B;
+    letter-spacing: 0.05em;
+    border-radius: 4px;
+  }
+  
+  .btn-chill-red:hover,
+  .btn-chill-red:active,
+  .btn-chill-red:focus,
+  .btn-chill-red.active {
+    background: #F2021E;
+    color: #ffffff;
+    border-color: #F2021E;
+  }

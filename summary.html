@@ -25,13 +25,23 @@
                 <h2>Filter:</h2>
                 <div class="row">
                     <div class="col-4">
-                        <input type="text" id="cusfilter" placeholder="Enter Block 2: "/>
+                        <input type="text" id="blocktwo" placeholder="Enter Block 2 Number: "/>
                     </div>
                     <div class="col-4">
-                        <button type="button" class="btn btn-block btn-primary mb-3 ml-2" onclick="filterordersByEmail()" >Filter</button>
+                        <button type="button" class="btn btn-block btn-primary mb-3 ml-2" onclick="filterordersByBlockTwo()" >Filter</button>
                     </div>
                     <div class="col-4">
                         <button type="button" class="btn btn-block btn-primary"  onclick="clearFilter()" >Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-body bg-light mb-5 mt-1">
+                    <div id="summaryDiv">
+
                     </div>
                 </div>
             </div>
@@ -55,6 +65,8 @@
             dataType: "json",
             data: { 'confirmed' : true}
         }).done(function (data, status) {
+
+            summaryObject = new Object();
             items = data;
             for (item of items) {
                 ordersobj = ordersinfoobj[item[0]];
@@ -129,15 +141,34 @@
                         anOrderItem.product_name = item[14];
                         anOrderItem.quantity = item[15];
                         orderitemsforrecipient.push(anOrderItem);
+
+
+                        productObject = summaryObject[item[18]];
+                        if (productObject == undefined) {
+                            productObject = new Object();
+                            productObject.product_id = item[18];
+                            productObject.product_desc = item[14]
+                            productObject.total = 0;
+                            summaryObject[item[18]] = productObject;
+
+                        }
+                        productObject.total += item[15];       
                     }
+
                 }
 
             localStorage.setItem("ordersinfoobj", JSON.stringify(ordersinfoobj));
-
+            localStorage.setItem("summaryObject", JSON.stringify(summaryObject));
+            
             $('#display_orders').html('');
             for (let [key, value] of Object.entries(ordersinfoobj)) {
                 $('#display_orders').append(generateCard(value));
             }
+
+
+            $('#summaryDiv').html(generateSummary());
+
+
         });
     }
 
@@ -149,12 +180,18 @@
         }
     }
 
-    function filterordersByEmail() {
+
+    function filterordersByBlockTwo() {
         ordersinfoobj = JSON.parse(localStorage.getItem("ordersinfoobj"));
         filteredorderinfoobj = new Object();
         for (let [key,value] of Object.entries(ordersinfoobj)){
-            if (value.b2 === $('#cusfilter').val()) {
-                filteredorderinfoobj[value.orderid] = value;
+            recipients = value.recipients;
+            for (index in recipients) {
+                arecipient = recipients[index];
+                if (arecipient.b2 === $('#blocktwo').val()) {
+                    filteredorderinfoobj[value.orderid] = value;
+                    break;
+                }
             }
         }
 
@@ -184,14 +221,25 @@
             }
         }
         cardsHtml += '</div>';
-        cardsHtml += '<div class="card-footer">';
-        cardsHtml += '<div class="row">';
-        cardsHtml += '<div class="col"><button type="button" class="btn btn-block btn-primary"  onclick="confirmOrder(' + order.orderid + ')">Confirm</button></div>'
-        cardsHtml += '<div class="col"><button type="button" class="btn btn-block btn-danger"  onclick="deleteOrder(' + order.orderid + ')">Delete</button></div>'
-        cardsHtml += '</div></div></div></div>';
+        cardsHtml += '</div></div>';
+
         return cardsHtml;
 
         
+    }
+
+
+    function generateSummary() {
+        total = 0;
+        summaryHtml = '';
+        summaryObject = JSON.parse(localStorage.getItem("summaryObject"));
+        for (let [key,value] of Object.entries(summaryObject)){
+            total += value.total;
+            summaryHtml += '<div class="row"><div class="col"><b>'+ value.product_desc + '</b> - ' + value.total + '</div></div>';
+        }
+        summaryHtml += '<div class="row"><div class="col"><b> Total Carnations - </b>' + total + '</div></div>';
+        summaryHtml += '<div class="row"><div class="col"><b> Grand Total - </b>' + '$' + total*2 + '</div></div>';
+        return summaryHtml;
     }
 </script>
 </body>
