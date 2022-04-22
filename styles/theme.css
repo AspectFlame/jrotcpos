@@ -4,8 +4,6 @@
     border-color: #FFADD5;
     letter-spacing: 0.05rem;
     border-radius: 4px;
-    padding: .5em;
-    font-family: "Helvetica Neue", Helvetica, sans serif;
   }
   
   .btn-light-pink:hover,
@@ -19,13 +17,11 @@
   
   
   .btn-dark-pink{
-    color: #FF478B;
+    color: #ffffff;
     background-color: #FF478B;
     border-color: #FF478B;
     letter-spacing: 0.05rem;
     border-radius: 4px;
-    padding: .5em;
-    font-family: "Helvetica Neue", Helvetica, sans serif;
   }
   
   
@@ -44,8 +40,6 @@
     border-color: #FD213B;
     letter-spacing: 0.05em;
     border-radius: 4px;
-    padding: .5em;
-    font-family: "Helvetica Neue", Helvetica, sans serif;
   }
   
   .btn-chill-red:hover,

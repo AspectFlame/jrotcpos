@@ -23,14 +23,9 @@
             </div>
         </div>
         <div class="row">
-
             <div class="form-group col text-center">
                 <label for="customer-email" class="col-form-label">Your Email:</label>
                 <select id="customer-email" class="selectpicker show-tick" data-live-search="true" data-size="10"></select>
-
-            <div class="col">
-                <div id="summaryEmail"></div>
-
             </div>
         </div>
         <div class="row">
@@ -44,7 +39,6 @@
             </div>
         </div>
         <div class="row">
-
             <div class="col-5 p-3">
                 <a class="btn btn-dark float-left" id="backHome" href = "">Back Home</a>
             </div>
@@ -53,19 +47,6 @@
             </div>
             <div class="col-5 p-3">
                 <a class="btn btn-primary float-right disabled" id="orderToDB" onclick="addOrderToDb()">Finish Order</a>
-
-            <div class="col-3 p-3">
-                <a class="btn btn-dark float-left" id="backHome" href = "">Back Home</a>
-            </div>
-            <div class="col-3 p-3">
-                <a class="btn btn-secondary float-left" id="backToOrders" href = "">Back to Orders</a>
-            </div>
-            <div class="col-3 p-3">
-                <a class="btn btn-info" id="backToCustomer" href = "">Back to Customer Info</a>
-            </div>
-            <div class="col-3 p-3">
-                <a class="btn btn-primary float-right" id="orderToDB" onclick="addOrderToDb()">Finish Order</a>
-
             </div>
         </div>
     </div>
@@ -79,11 +60,7 @@
                 var aCard = recipientCards[i];
                 cardsHtml += '<div class="col-4 mb-2">';
                 cardsHtml += '<div class="card h-100">';
-
                 cardsHtml += '<div class="card-header"><b>' + aCard.recipientName + '</b></div>';
-
-                cardsHtml += '<div class="card-header"><b>' + aCard.recipientEmail + '</b></div>';
-
                 cardsHtml += '<div class="card-body"><p class="mb-2">' + aCard.message + '</p>';
                 for (let [key, value] of Object.entries(aCard.values)) {
                     cardsHtml += '<p class="mb-0">' + getItemNameFromId(key) + ' x' + value + '</p>';
@@ -91,12 +68,7 @@
                 cardsHtml += '</div>';
                 cardsHtml += '</div></div>';
             }
-
-
-            $('#summaryCards').html(cardsHtml);
-            $('#summaryEmail').html('<p><center><b>Your Email: ' + customerEmail + '</b></center></p>');
-            
-
+            $('#summaryCards').html(cardsHtml);            
         }
         function getItemNameFromId(id) {
             for (item of items) {
@@ -109,7 +81,6 @@
         $(document).ready(function () {
             items = JSON.parse(localStorage.getItem('itemsForCategory'));
             recipientCards = JSON.parse(localStorage.getItem('cart'));
-
             userEmails = JSON.parse(localStorage.getItem('userEmails'));
             for (item of recipientCards){
                 emailindex = userEmails.indexOf(item.recipientEmail);
@@ -141,20 +112,11 @@
             }
             refreshCardsDiv();
             refreshCartSummary(); 
-
-            customerEmail = localStorage.getItem('customerEmail');
-            refreshCardsDiv();
-            refreshCartSummary();            
-
         });
 
         function refreshCartSummary() {
             cartSummary = '';
             totals = new Array();
-
-            console.log("sad budgie noises");
-
-
             for (card of recipientCards) {
                 carditems = card.values;
                 i =0;
@@ -169,9 +131,6 @@
                 }
 
             }
-
-
-            console.log('total..' + totals);
 
             cartSummary += ('<div class="row">');
                 cartSummary += ('<div class="col">');
@@ -227,9 +186,4 @@
 
     </script>
 </body>
-
 </html>
-
-
-</html>
-
