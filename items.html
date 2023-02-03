@@ -97,7 +97,7 @@
                     $(document).ready(function () {
                         localStorage.setItem('category', params.get('category'));        
                         $.ajax({
-                            url: "http://localhost:5001/get_items",
+                            url: "http://http://67.205.179.30:8000/get_items",
                             context: this,
                             method: "post",
                             data: {'category_id': params.get('category')},
@@ -112,7 +112,7 @@
                         });                        
 
                         $.ajax({
-                            url: "http://localhost:5001/get_users",
+                            url: "http://http://67.205.179.30:8000/get_users",
                             context: this,
                             method: "post",
                             dataType: "json"
