@@ -163,7 +163,7 @@
         function addOrderToDb() {
 
             $.ajax({
-                url: "http://http://67.205.179.30:8000/create_order",
+                url: "http://http://67.205.179.30:5001/create_order",
                 context: this,
                 method: "put",
                 data: {'customer_email': localStorage.getItem('customerEmail'), 'recipient_cards': localStorage.getItem('cart')},

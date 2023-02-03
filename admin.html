@@ -43,7 +43,7 @@
 <script>
     function deleteOrder(id) {
         $.ajax({
-            url: "http://http://67.205.179.30:8000/delete_order",
+            url: "http://http://67.205.179.30:5001/delete_order",
             context: this,
             method: "delete",
             data: {'order_id': id},
@@ -57,7 +57,7 @@
     });
     function confirmOrder(id) {
         $.ajax({
-            url: "http://http://67.205.179.30:8000/confirm_order",
+            url: "http://http://67.205.179.30:5001/confirm_order",
             context: this,
             method: "post",
             data: {'order_id': id},
@@ -71,7 +71,7 @@
         orders = {};
         ordersinfoobj = new Object();
         $.ajax({
-            url: "http://http://67.205.179.30:8000/get_order_info",
+            url: "http://http://67.205.179.30:5001/get_order_info",
             context: this,
             method: "post",
             dataType: "json",
