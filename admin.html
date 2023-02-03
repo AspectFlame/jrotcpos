@@ -200,12 +200,16 @@
             cardsHtml += '<div class="card-body"><b>Recipient Name and Email: </b>' + orderrecipient.fn + ' ' + orderrecipient.ln + ', ' + orderrecipient.email + '<br><b>Recipient Schedule: </b>' + orderrecipient.b1 + ', ' + orderrecipient.b2 + ', ' + orderrecipient.b3 + ', ' + orderrecipient.b4 + ', ' + orderrecipient.b5 + ', ' + orderrecipient.b6 + ', ' + orderrecipient.b7 + ', ' + orderrecipient.adv + '<br><b>Recipient Message: </b>' + orderrecipient.gift_msg + '</div>';
             
             orderitems = orderrecipient.orderitems;
+            totalCost = 0;
             for (itemindex in orderitems){
                 orderitem = orderitems[itemindex];
                 cardsHtml += '<div class="row ml-3">' + orderitem.product_name + ' x' + orderitem.quantity + '</div>'; 
+                totalCost += orderitem.quantity;
                 totalQuantity+=orderitem.quantity;
                 
             }
+            totalCost += totalCost;
+            cardsHtml += '<div class = "row ml-1">' + 'Total: $' + totalCost + '</div>';
         }
         
         cardsHtml += '<div class="row ml-3"><b>' + 'Total: $'+ totalQuantity*2 + '</b></div>';
