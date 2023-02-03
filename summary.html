@@ -25,7 +25,7 @@
                 <h2>Filter:</h2>
                 <div class="row">
                     <div class="col-4">
-                        <input type="text" id="blocktwo" placeholder="Enter Block 2 Number: "/>
+                        <input type="text" id="blocktwo" placeholder="Enter Block 4 Number: "/>
                     </div>
                     <div class="col-4">
                         <button type="button" class="btn btn-block btn-primary mb-3 ml-2" onclick="filterordersByBlockTwo()" >Filter</button>
@@ -59,7 +59,7 @@
         orders = {};
         ordersinfoobj = new Object();
         $.ajax({
-            url: "http://67.205.179.30:5001/get_order_info",
+            url: "http://localhost:5001/get_order_info",
             context: this,
             method: "post",
             dataType: "json",
@@ -188,7 +188,7 @@
             recipients = value.recipients;
             for (index in recipients) {
                 arecipient = recipients[index];
-                if (arecipient.b2 === $('#blocktwo').val()) {
+                if (arecipient.b4 === $('#blocktwo').val()) {
                     filteredorderinfoobj[value.orderid] = value;
                     break;
                 }
@@ -206,6 +206,7 @@
 
 
     function generateCard(order) {
+        totalQuantity = 0;
         cardsHtml = '<div class="col-4 mb-2">';
         cardsHtml += '<div class="card">';
         cardsHtml += '<div class="card-header"><b>Customer email: </b>' + order.customeremail +'</div>';
@@ -217,9 +218,10 @@
             for (itemindex in orderitems){
                 orderitem = orderitems[itemindex];
                 cardsHtml += '<div class="row ml-3">' + orderitem.product_name + ' x' + orderitem.quantity + '</div>'; 
-
+                totalQuantity+=orderitem.quantity;
             }
         }
+        cardsHtml += '<div class="row ml-3"><b>' + 'Total: $'+ totalQuantity*2 + '</b></div>';
         cardsHtml += '</div>';
         cardsHtml += '</div></div>';
 

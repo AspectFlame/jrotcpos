@@ -37,7 +37,7 @@
                     <div class="modal-body">
                         <form>
                         <div class="form-group">
-                            <label for="recipient-name" class="col-form-label">Recipient Name and 2nd block:</label>
+                            <label for="recipient-name" class="col-form-label">Recipient Name and 4th block:</label>
                             <select id="recipient-name" class="selectpicker show-tick" data-live-search="true" data-size="10">
                             </select>
                         </div>
@@ -97,7 +97,7 @@
                     $(document).ready(function () {
                         localStorage.setItem('category', params.get('category'));        
                         $.ajax({
-                            url: "http://67.205.179.30:5001/get_items",
+                            url: "http://localhost:5001/get_items",
                             context: this,
                             method: "post",
                             data: {'category_id': params.get('category')},
@@ -112,7 +112,7 @@
                         });                        
 
                         $.ajax({
-                            url: "http://67.205.179.30:5001/get_users",
+                            url: "http://localhost:5001/get_users",
                             context: this,
                             method: "post",
                             dataType: "json"
@@ -121,7 +121,7 @@
                             userNames = new Array();
                             userEmails = new Array();
                             for (user of users){
-                                userNames.push({"lastname": user[2], "firstname": user[1], "roomnum": user[6], "email" : user[3]});
+                                userNames.push({"lastname": user[2], "firstname": user[1], "roomnum": user[8], "email" : user[3]});
                                 userEmails.push(user[3]);
                             }
                             localStorage.setItem('userNames', JSON.stringify(userNames));   

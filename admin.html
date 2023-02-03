@@ -43,7 +43,7 @@
 <script>
     function deleteOrder(id) {
         $.ajax({
-            url: "http://67.205.179.30:5001/delete_order",
+            url: "http://localhost:5001/delete_order",
             context: this,
             method: "delete",
             data: {'order_id': id},
@@ -57,7 +57,7 @@
     });
     function confirmOrder(id) {
         $.ajax({
-            url: "http://67.205.179.30:5001/confirm_order",
+            url: "http://localhost:5001/confirm_order",
             context: this,
             method: "post",
             data: {'order_id': id},
@@ -71,7 +71,7 @@
         orders = {};
         ordersinfoobj = new Object();
         $.ajax({
-            url: "http://67.205.179.30:5001/get_order_info",
+            url: "http://localhost:5001/get_order_info",
             context: this,
             method: "post",
             dataType: "json",
@@ -191,6 +191,7 @@
 
 
     function generateCard(order) {
+        totalQuantity = 0;
         cardsHtml = '<div class="col-4 mb-2">';
         cardsHtml += '<div class="card">';
         cardsHtml += '<div class="card-header"><b>Customer email: </b>' + order.customeremail +'</div>';
@@ -202,9 +203,12 @@
             for (itemindex in orderitems){
                 orderitem = orderitems[itemindex];
                 cardsHtml += '<div class="row ml-3">' + orderitem.product_name + ' x' + orderitem.quantity + '</div>'; 
-
+                totalQuantity+=orderitem.quantity;
+                
             }
         }
+        
+        cardsHtml += '<div class="row ml-3"><b>' + 'Total: $'+ totalQuantity*2 + '</b></div>';
         cardsHtml += '</div>';
         cardsHtml += '<div class="card-footer">';
         cardsHtml += '<div class="row">';
